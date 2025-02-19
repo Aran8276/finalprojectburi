@@ -10,28 +10,36 @@ use Exception;
 
 class PelangganController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         try {
-            $cachekey = 'pelaggan.all';
-            $pelanggan = Cache::remember($cachekey, 60, function () {
-                return Pelanggan::getAllPelanggan();
+            $query = $request->input('search');
+            $cacheKey = 'pelanggan.all' . ($query ? ".search.{$query}" : '');
+    
+            $pelanggan = Cache::remember($cacheKey, 60, function () use ($query) {
+                $pelangganQuery = Pelanggan::query();
+    
+                if ($query) {
+                    $pelangganQuery->where('pelanggan_nama', 'LIKE', "%{$query}%")
+                                   ->orWhere('pelanggan_email', 'LIKE', "%{$query}%")
+                                   ->orWhere('pelanggan_notelp', 'LIKE', "%{$query}%");
+                }
+    
+                return $pelangganQuery->get();
             });
-           
-            $response = [
+    
+            return response()->json([
                 'success' => true,
-                'message' => 'Successfully get pelanggan data.',
+                'message' => 'Successfully retrieved pelanggan data.',
                 'data' => $pelanggan,
-            ];
-            return response()->json($response, 200);
+            ], 200);
         } catch (Exception $error) {
-            $response = [
+            return response()->json([
                 'success' => false,
-                'message' => 'Sorry, there was an error in the internal server.',
+                'message' => 'Internal server error.',
                 'data' => null,
                 'errors' => $error->getMessage(),
-            ];
-            return response()->json($response, 500);
+            ], 500);
         }
     }
 

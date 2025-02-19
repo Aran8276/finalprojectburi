@@ -36,6 +36,12 @@ Route::prefix('auth')->group(function () {
 });
 
 
+Route::get('/v1/kategori', [KategoriController::class, 'index']);
+Route::get('/v1/kategori/{id}', [KategoriController::class, 'show']);
+Route::get('/v1/alat', [AlatController::class, 'index']);
+Route::get('/v1/alat/{id}', [AlatController::class, 'show']);
+
+
 // Route yang memerlukan autentikasi
 Route::middleware('auth:api')->group(function () {
     
@@ -46,11 +52,11 @@ Route::middleware('auth:api')->group(function () {
     
     // Route untuk pelanggan
     Route::prefix('/v1/pelanggan')->middleware('api')->group(function () {
-        Route::get('/', [PelangganController::class, 'index']);
-        Route::get('/{id}', [PelangganController::class, 'show']);
         Route::post('/', [PelangganController::class, 'store']);
         Route::put('/{id}', [PelangganController::class, 'update']);
         Route::delete('/{id}', [PelangganController::class, 'destroy']);
+        Route::get('/', [PelangganController::class, 'index']);
+        Route::get('/{id}', [PelangganController::class, 'show']);
     });
     
     //pelanggandetail
@@ -75,8 +81,6 @@ Route::middleware('auth:api')->group(function () {
     
     // Route untuk kategori
     Route::prefix('/v1/kategori')->group(function () {
-        Route::get('/', [KategoriController::class, 'index']);
-        Route::get('/{id}', [KategoriController::class, 'show']);
         Route::post('/', [KategoriController::class, 'store']);
         Route::put('/{id}', [KategoriController::class, 'update']);
         Route::delete('/{id}', [KategoriController::class, 'destroy']);
@@ -84,30 +88,27 @@ Route::middleware('auth:api')->group(function () {
     
     // Route untuk alat
     Route::prefix('/v1/alat')->group(function () {
-        Route::get('/', [AlatController::class, 'index']);
-        Route::get('/{id}', [AlatController::class, 'show']);
         Route::post('/', [AlatController::class, 'store']);
         Route::put('/{id}', [AlatController::class, 'update']);
         Route::delete('/{id}', [AlatController::class, 'destroy']);
-        Route::get('/image/{id}', [AlatController::class, 'showImage']); 
-        
+        Route::post('/{id}/image', [AlatController::class, 'updateImage']); 
     });
 
     // Route untuk penyewaan
     Route::prefix('/v1/penyewaan')->group(function () {
-        Route::get('/', [PenyewaanController::class, 'index']);
-        Route::get('/{id}', [PenyewaanController::class, 'show']);
         Route::post('/', [PenyewaanController::class, 'store']);
         Route::put('/{id}', [PenyewaanController::class, 'update']);
         Route::delete('/{id}', [PenyewaanController::class, 'destroy']);
+        Route::get('/', [PenyewaanController::class, 'index']);
+        Route::get('/{id}', [PenyewaanController::class, 'show']);
     });
 
     // Route untuk penyewaan detail
     Route::prefix('/v1/detail/penyewaan')->group(function () {
-        Route::get('/', [PenyewaanDetailController::class, 'index']);
-        Route::get('/{id}', [PenyewaanDetailController::class, 'show']);
         Route::post('/', [PenyewaanDetailController::class, 'store']);
         Route::put('/{id}', [PenyewaanDetailController::class, 'update']);
         Route::delete('/{id}', [PenyewaanDetailController::class, 'destroy']);
+        Route::get('/', [PenyewaanDetailController::class, 'index']);
+        Route::get('/{id}', [PenyewaanDetailController::class, 'show']);
     });
 });
